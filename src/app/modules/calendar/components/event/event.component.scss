@@ -1,0 +1,41 @@
+.event {
+  background-size: cover;
+  color: var(--white);
+  max-width: 360px;
+
+  &__background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    padding: 15px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  &__date {
+    font-weight: bold;
+    font-size: 30px;
+  }
+
+  &__title {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  &__description {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  &__image {
+    margin-top: 10px;
+    width: 100%;
+    height: 180px;
+  }
+}

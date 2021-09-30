@@ -1,2 +1,11 @@
 <div>
+  <ngx-masonry [options]="{ horizontalOrder: true, gutter: 10 }">
+    <app-event
+      *ngFor="let event of events; let i = index"
+      class="calendar__event"
+      ngxMasonryItem
+      [event]="event"
+      [color]="colors[i - (Math.floor(i/4)*4)]"
+    ></app-event>
+  </ngx-masonry>
 </div>

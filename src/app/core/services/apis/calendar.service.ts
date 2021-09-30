@@ -1,33 +1,41 @@
-import { Injectable,  } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { concatMap, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { CalendarInfo } from '../../interfaces/calendar.interface';
+import { CalendarEvents, CalendarInfo } from '../../interfaces/calendar.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
-  // private readonly url = environment.apis.calendar;
-  // calendarInfo: CalendarInfo;
+  private readonly url = environment.apis.calendar;
+  private calendarInfo: CalendarInfo | null = null;
 
-  // constructor(
-  //   private httpClient: HttpClient,
-  // ) { }
+  constructor(
+    private httpClient: HttpClient,
+  ) { }
 
-  // getCalendarInfo(): Observable<CalendarInfo> {
-  //   const calendarUrl =  'https://calendar.time.ly/6a37fb6n';
-  //   return this.httpClient.post<CalendarInfo>(`${this.url}/calendars/info`, { url: calendarUrl })
-  // }
+  getCalendarInfo(): Observable<CalendarInfo> {
+    const calendarUrl = 'https://calendar.time.ly/6a37fb6n';
+    const calendarInfo = this.calendarInfo
 
-  // getCalendarEvents(): Observable<{}> {
-  //   if (this.calendarInfo) {
-  //     return this.httpClient.get<{}>(`${this.url}/alendars/${calendarId}/events`)
-  //   } else {
-  //     return this.getCalendarInfo().pipe(
+    if (calendarInfo ===  null)
+      return this.httpClient.post<CalendarInfo>(`${this.url}/calendars/info`, { url: calendarUrl });
+    else
+      return of(calendarInfo);
+  }
 
-  //     )
-  //   }
-
-  // }
+  getCalendarEvents(): Observable<CalendarEvents> {
+    return this.getCalendarInfo().pipe(
+      tap(calendar => this.calendarInfo = calendar),
+      concatMap(({data: { id }}) => this.httpClient.get<CalendarEvents>(`${this.url}/calendars/${id}/events`)),
+      // map(({ data }) => ({
+      //   data: {
+      //     ...data,
+      //     items: data.items.map(item => ({...item, description_short: item.description_short.replace('&hellip;', '...')}))
+      //   }
+      // }))
+    )
+  }
 }
