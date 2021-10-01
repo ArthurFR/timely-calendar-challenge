@@ -16,6 +16,10 @@ export class CalendarService {
     private httpClient: HttpClient,
   ) { }
 
+  /**
+   * Checks if the calendar info is in memory, if it is return it if not fetch for it
+   * @returns Calendar info
+   */
   getCalendarInfo(): Observable<CalendarInfo> {
     const calendarUrl = 'https://calendar.time.ly/6a37fb6n';
     const calendarInfo = this.calendarInfo;
@@ -26,6 +30,12 @@ export class CalendarService {
       return of(calendarInfo);
   }
 
+  /**
+   * // Get the calendar info and save it to memory then fetch for 30 Calendar events and replace '&hellip;' to '...' in their description
+   * @param page Page that is going to be fetched
+   * @param start_date Initial date that is going to be fetched from
+   * @returns Calendar Events
+   */
   getCalendarEvents(page: number, start_date: string): Observable<CalendarEvents> {
     const params = {start_date, per_page: 30, page};
 

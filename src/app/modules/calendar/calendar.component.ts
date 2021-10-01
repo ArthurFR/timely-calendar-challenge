@@ -30,6 +30,10 @@ export class CalendarComponent implements OnInit {
     this.getCalendarEvents().subscribe();
   }
 
+  /**
+   * Get the calendar events tem updates the events prop with them and sum 1 to page.
+   * @returns Observable that returns the calendar events
+   */
   getCalendarEvents() {
     return  this.calendarService.getCalendarEvents(this.page, this.selected.startDate.format('YYYY-MM-DD')).pipe(
       map(events => events.data.items),
