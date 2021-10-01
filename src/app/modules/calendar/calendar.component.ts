@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+import { map, tap } from 'rxjs/operators';
 import { CalendarEvent } from 'src/app/core/interfaces/calendar.interface';
 import { CalendarService } from 'src/app/core/services/apis/calendar.service';
 
@@ -9,28 +12,33 @@ import { CalendarService } from 'src/app/core/services/apis/calendar.service';
 })
 export class CalendarComponent implements OnInit {
   events: CalendarEvent[] = [];
-  Math = Math;
+  page = 0;
+
+  selected = {startDate: moment(), endDate: moment()};
+
   constructor(
     private calendarService: CalendarService
   ) { }
 
-  // colors: Record<number, string> = {
-  //   0: 'rgba(254, 3, 5, 0.8)',
-  //   1: 'rgba(157, 157, 157, 0.8)',
-  //   2: 'rgba(63, 2, 107, 0.8)',
-  //   3: 'rgba(4, 195, 240, 0.8)',
-  // }
-  colors: Record<number, string> = {
-    0: 'rgba(157, 157, 157, 0.8)',
-    1: 'rgba(157, 157, 157, 0.8)',
-    2: 'rgba(157, 157, 157, 0.8)',
-    3: 'rgba(157, 157, 157, 0.8)',
+  ngOnInit() {
+    this.getCalendarEvents().subscribe();
   }
 
-  ngOnInit(): void {
-    this.calendarService.getCalendarEvents().subscribe(
-      calendarEvents => this.events = calendarEvents.data.items
+  getEventsFromNewDate() {
+    this.page = 0;
+    this.events = [];
+    this.getCalendarEvents().subscribe();
+  }
+
+  getCalendarEvents() {
+    return  this.calendarService.getCalendarEvents(this.page, this.selected.startDate.format('YYYY-MM-DD')).pipe(
+      map(events => events.data.items),
+      tap(events => this.events = [...events, ...this.events]),
+      tap(() => this.page++)
     )
   }
 
+  onScroll(): void {
+    this.getCalendarEvents().subscribe();
+  }
 }

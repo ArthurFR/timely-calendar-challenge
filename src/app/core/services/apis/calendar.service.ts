@@ -18,7 +18,7 @@ export class CalendarService {
 
   getCalendarInfo(): Observable<CalendarInfo> {
     const calendarUrl = 'https://calendar.time.ly/6a37fb6n';
-    const calendarInfo = this.calendarInfo
+    const calendarInfo = this.calendarInfo;
 
     if (calendarInfo ===  null)
       return this.httpClient.post<CalendarInfo>(`${this.url}/calendars/info`, { url: calendarUrl });
@@ -26,16 +26,18 @@ export class CalendarService {
       return of(calendarInfo);
   }
 
-  getCalendarEvents(): Observable<CalendarEvents> {
+  getCalendarEvents(page: number, start_date: string): Observable<CalendarEvents> {
+    const params = {start_date, per_page: 30, page};
+
     return this.getCalendarInfo().pipe(
       tap(calendar => this.calendarInfo = calendar),
-      concatMap(({data: { id }}) => this.httpClient.get<CalendarEvents>(`${this.url}/calendars/${id}/events`)),
-      // map(({ data }) => ({
-      //   data: {
-      //     ...data,
-      //     items: data.items.map(item => ({...item, description_short: item.description_short.replace('&hellip;', '...')}))
-      //   }
-      // }))
+      concatMap(({data: { id }}) => this.httpClient.get<CalendarEvents>(`${this.url}/calendars/${id}/events`, { params })),
+      map(({ data }) => ({
+        data: {
+          ...data,
+          items: data.items.map(item => ({...item, description_short: item.description_short?.replace('&hellip;', '...')}))
+        }
+      }))
     )
   }
 }

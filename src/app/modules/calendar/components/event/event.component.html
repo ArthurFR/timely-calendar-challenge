@@ -1,4 +1,5 @@
-<div class="event" [ngStyle]="{'background-color': color}">
+<div class="event">
+  <div *ngIf="image" class="event__image" [ngStyle]="{ 'background-image': getImageUrl() }"></div>
   <div class="event__content">
     <div class="event__date">
       {{ eventData?.start_datetime | date : 'MM/dd'}}
@@ -12,6 +13,6 @@
       {{ eventData?.description_short }}
     </div>
 
-    <div *ngIf="image" class="event__image" [ngStyle]="{ 'background-image': getImageUrl() }"></div>
+
   </div>
 </div>

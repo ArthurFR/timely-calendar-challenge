@@ -8,7 +8,6 @@ import { CalendarEvent, EventImage } from 'src/app/core/interfaces/calendar.inte
 })
 export class EventComponent {
 
-  @Input() color = '';
   @Input() set event(event: CalendarEvent | undefined) {
     if (event) {
       this.eventData = event;
